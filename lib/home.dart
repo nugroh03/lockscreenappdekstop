@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lockscreenapp/themes.dart';
+import 'package:slide_countdown/slide_countdown.dart';
 import 'package:window_manager/window_manager.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,25 +11,158 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  void hideHandle() async {
-    await windowManager.hide();
+  TextEditingController qrController = TextEditingController(text: '');
 
-    Future.delayed(Duration(seconds: 5), () async {
+  bool countDown = false;
+  Duration defaultDuration = Duration(seconds: 0);
+  static const defaultPadding =
+      EdgeInsets.symmetric(horizontal: 10, vertical: 5);
+
+  void hideHandle(String code) async {
+    int timer = 0;
+
+    if (code == "satu") {
+      timer = 1;
+    } else {
+      timer = 2;
+    }
+
+    setState(() {
+      defaultDuration = Duration(minutes: timer);
+      countDown = true;
+    });
+    // await windowManager.setPosition(Offset(1200, 700));
+    await windowManager.setSize(Size(300, 80));
+
+    Future.delayed(Duration(minutes: timer), () async {
       // 5s over, navigate to a new page
-      await windowManager.hide();
-      await windowManager.focus();
+      await windowManager.setFullScreen(true);
+      setState(() {
+        defaultDuration = Duration(seconds: 0);
+        countDown = false;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-      child: ElevatedButton(
-          onPressed: () {
-            hideHandle();
-          },
-          child: Text("Hide")),
-    ));
+        backgroundColor: primary,
+        body: !countDown
+            ? Stack(
+                children: [
+                  Positioned(
+                    child: Center(
+                      child: Container(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "SELAMAT DATANG",
+                                style: roboto.copyWith(
+                                    fontSize: 60,
+                                    color: secondary,
+                                    fontWeight: bold),
+                              ),
+                              Container(
+                                width: displayWidth(context) * 0.6,
+                                margin: EdgeInsets.only(top: 20),
+                                height: 60,
+                                child: TextField(
+                                  autofocus: true,
+                                  controller: qrController,
+                                  style: roboto.copyWith(color: primary),
+                                  onChanged: (String value) {
+                                    if (value.length >= 4) {
+                                      hideHandle(qrController.text);
+                                      qrController.clear();
+                                    }
+                                  },
+                                  textAlign: TextAlign.center,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: whiteColor,
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                "Scan QR CODE For Open Screen Lock",
+                                style: roboto.copyWith(
+                                  fontSize: 20,
+                                  color: whiteColor,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 100,
+                              ),
+                              Text(
+                                "NIKMATI SESI FOTO ANDA DIDALAM FOTO BOX INI SELAMA 5 ATAU 10 MENIT SESUAI DENGAN WAKTU ORDER ANDA",
+                                style: roboto.copyWith(
+                                  fontSize: 20,
+                                  color: whiteColor,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Text(
+                                "HUBUNGI ADMIN UNTUK MEMBUKA SCREEN LOCK",
+                                style: roboto.copyWith(
+                                    fontSize: 20,
+                                    color: secondary,
+                                    fontWeight: bold),
+                              ),
+                            ]),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 40,
+                    right: 10,
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            "assets/logo.png",
+                            width: 50,
+                          ),
+                          Image.asset(
+                            "assets/title.png",
+                            width: 200,
+                          ),
+                          Image.asset(
+                            "assets/description.png",
+                            width: 200,
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              )
+            : Container(
+                child: Center(
+                  child: SlideCountdown(
+                    duration: defaultDuration,
+                    padding: defaultPadding,
+                    fade: true,
+                    textStyle: roboto.copyWith(fontSize: 30, color: whiteColor),
+                    icon: const Padding(
+                      padding: EdgeInsets.only(right: 5),
+                      child: Icon(
+                        Icons.alarm,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                      color: primary,
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                    ),
+                  ),
+                ),
+              ));
   }
 }
