@@ -39,28 +39,28 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-# msix_config:
-#   display_name: LSHOKKIE
-#   publisher_display_name: SANDENTERPRICE
-#   identity_name: SANDENTERPRICE.ABCD.LSHOKKIE
-#   msix_version: 1.0.0.0
-#   certificate_path: D:\ABCD Project\FOTO HOKIE\lockscreenappdekstop\certificate\lockscreensertificate.pfx
-#   certificate_password: 1234
-#   publisher: CN=SAND_ENTERPRICE, O=My Company, L=Indonesia, S=Indonesia, C=IDN
-#   architecture: x64
-#   logo_path: D:\ABCD Project\FOTO HOKIE\lockscreenappdekstop\certificate\logo.png
-#   capabilities: 'internetClient,location,microphone,webcam'
 msix_config:
   display_name: LSHOKKIE
-  app_installer: #<-- app installer configuration
-    publish_folder_path: D:\ABCD Project\FOTO HOKIE\lockscreenappdekstop\myPublishFolder
-    hours_between_update_checks: 0
-    automatic_background_task: true
-    update_blocks_activation: true
-    show_prompt: true
-    force_update_from_any_version: false
-    store: true
+  publisher_display_name: SANDENTERPRICE
+  identity_name: SANDENTERPRICE.ABCD.LSHOKKIE
   msix_version: 1.0.0.0
+  certificate_path: D:\ABCD Project\FOTO HOKIE\lockscreenappdekstop\certificate\lockscreensertificate.pfx
+  certificate_password: 1234
+  publisher: CN=SAND_ENTERPRICE, O=My Company, L=Indonesia, S=Indonesia, C=IDN
+  architecture: x64
+  logo_path: D:\ABCD Project\FOTO HOKIE\lockscreenappdekstop\certificate\logo.png
+  capabilities: 'internetClient,location,microphone,webcam'
+  # msix_config:
+  #   display_name: LSHOKKIE
+  #   app_installer: #<-- app installer configuration
+  #     publish_folder_path: D:\ABCD Project\FOTO HOKIE\lockscreenappdekstop\myPublishFolder
+  #     hours_between_update_checks: 0
+  #     automatic_background_task: true
+  #     update_blocks_activation: true
+  #     show_prompt: true
+  #     force_update_from_any_version: false
+  #     store: true
+  #   msix_version: 1.0.0.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

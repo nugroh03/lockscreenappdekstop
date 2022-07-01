@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lockscreenapp/themes.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 import 'package:window_manager/window_manager.dart';
@@ -10,13 +11,21 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WindowListener {
   TextEditingController qrController = TextEditingController(text: '');
-
   bool countDown = false;
   Duration defaultDuration = Duration(seconds: 0);
   static const defaultPadding =
       EdgeInsets.symmetric(horizontal: 10, vertical: 5);
+
+  FocusNode fQR = FocusNode();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fQR = FocusNode();
+  }
 
   void hideHandle(String code) async {
     int timer = 0;
@@ -35,17 +44,30 @@ class _HomePageState extends State<HomePage> {
     await windowManager.setSize(Size(300, 80));
 
     Future.delayed(Duration(minutes: timer), () async {
-      // 5s over, navigate to a new page
       await windowManager.setFullScreen(true);
-      await windowManager.focus();
-      await windowManager.isAlwaysOnTop();
-      await windowManager.setClosable(false);
-      await windowManager.setSkipTaskbar(true);
       setState(() {
         defaultDuration = Duration(seconds: 0);
         countDown = false;
       });
+    }).then((value) async {
+      await windowManager.isFocused();
+      fQR.requestFocus();
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement disposesa
+    fQR.dispose();
+    super.dispose();
+  }
+
+  @override
+  void onWindowFocus() {
+    // Make sure to call once.
+    // setState(() {});
+    fQR.requestFocus();
+    // do something
   }
 
   @override
@@ -75,6 +97,7 @@ class _HomePageState extends State<HomePage> {
                                 height: 60,
                                 child: TextField(
                                   autofocus: true,
+                                  focusNode: fQR,
                                   controller: qrController,
                                   style: gotham.copyWith(color: primary),
                                   onChanged: (String value) {
