@@ -16,6 +16,9 @@ void main() async {
     await windowManager.show();
     await windowManager.maximize();
     await windowManager.focus();
+    await windowManager.isAlwaysOnTop();
+    await windowManager.setClosable(false);
+    await windowManager.setSkipTaskbar(true);
   });
   runApp(const MyApp());
 }

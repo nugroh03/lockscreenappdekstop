@@ -37,6 +37,10 @@ class _HomePageState extends State<HomePage> {
     Future.delayed(Duration(minutes: timer), () async {
       // 5s over, navigate to a new page
       await windowManager.setFullScreen(true);
+      await windowManager.focus();
+      await windowManager.isAlwaysOnTop();
+      await windowManager.setClosable(false);
+      await windowManager.setSkipTaskbar(true);
       setState(() {
         defaultDuration = Duration(seconds: 0);
         countDown = false;
@@ -60,10 +64,10 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Text(
                                 "SELAMAT DATANG",
-                                style: roboto.copyWith(
-                                    fontSize: 60,
-                                    color: secondary,
-                                    fontWeight: bold),
+                                style: gotham.copyWith(
+                                  fontSize: 60,
+                                  color: secondary,
+                                ),
                               ),
                               Container(
                                 width: displayWidth(context) * 0.6,
@@ -72,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                                 child: TextField(
                                   autofocus: true,
                                   controller: qrController,
-                                  style: roboto.copyWith(color: primary),
+                                  style: gotham.copyWith(color: primary),
                                   onChanged: (String value) {
                                     if (value.length >= 4) {
                                       hideHandle(qrController.text);
@@ -89,8 +93,9 @@ class _HomePageState extends State<HomePage> {
                               ),
                               Text(
                                 "Scan QR CODE For Open Screen Lock",
-                                style: roboto.copyWith(
+                                style: gotham.copyWith(
                                   fontSize: 20,
+                                  fontWeight: light,
                                   color: whiteColor,
                                 ),
                               ),
@@ -99,9 +104,10 @@ class _HomePageState extends State<HomePage> {
                               ),
                               Text(
                                 "NIKMATI SESI FOTO ANDA DIDALAM FOTO BOX INI SELAMA 5 ATAU 10 MENIT SESUAI DENGAN WAKTU ORDER ANDA",
-                                style: roboto.copyWith(
+                                style: gotham.copyWith(
                                   fontSize: 20,
                                   color: whiteColor,
+                                  fontWeight: light,
                                 ),
                               ),
                               SizedBox(
@@ -109,10 +115,10 @@ class _HomePageState extends State<HomePage> {
                               ),
                               Text(
                                 "HUBUNGI ADMIN UNTUK MEMBUKA SCREEN LOCK",
-                                style: roboto.copyWith(
-                                    fontSize: 20,
-                                    color: secondary,
-                                    fontWeight: bold),
+                                style: gotham.copyWith(
+                                  fontSize: 20,
+                                  color: secondary,
+                                ),
                               ),
                             ]),
                       ),
@@ -148,7 +154,7 @@ class _HomePageState extends State<HomePage> {
                     duration: defaultDuration,
                     padding: defaultPadding,
                     fade: true,
-                    textStyle: roboto.copyWith(fontSize: 30, color: whiteColor),
+                    textStyle: gotham.copyWith(fontSize: 30, color: whiteColor),
                     icon: const Padding(
                       padding: EdgeInsets.only(right: 5),
                       child: Icon(

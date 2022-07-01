@@ -31,5 +31,6 @@ FontWeight medium = FontWeight.w500;
 FontWeight semiBold = FontWeight.w700;
 FontWeight bold = FontWeight.bold;
 
-TextStyle roboto = GoogleFonts.roboto();
+TextStyle gotham = TextStyle(fontFamily: "Gotham");
+//TextStyle gothamLight = TextStyle(fontFamily: "GothamLight");
 //TextStyle lato = GoogleFonts.lato();
