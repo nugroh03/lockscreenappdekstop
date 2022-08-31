@@ -14,6 +14,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with WindowListener {
   TextEditingController qrController = TextEditingController(text: '');
   bool countDown = false;
+  bool waitingOut = false;
+  bool wrong = false;
   Duration defaultDuration = Duration(seconds: 0);
   static const defaultPadding =
       EdgeInsets.symmetric(horizontal: 10, vertical: 5);
@@ -29,11 +31,15 @@ class _HomePageState extends State<HomePage> with WindowListener {
 
   void hideHandle(String code) async {
     int timer = 0;
+    int timerwaiting = 60;
 
-    if (code == "satu") {
+    if (code == "FHINDO") {
+      timer = 5;
+    } else if (code == "FHINDO10") {
+      timer = 10;
+    } else if (code == "qwertieser") {
       timer = 1;
-    } else {
-      timer = 2;
+      timerwaiting = 10;
     }
 
     setState(() {
@@ -45,12 +51,22 @@ class _HomePageState extends State<HomePage> with WindowListener {
 
     Future.delayed(Duration(minutes: timer), () async {
       await windowManager.setFullScreen(true);
+      await windowManager.focus();
       setState(() {
         defaultDuration = Duration(seconds: 0);
         countDown = false;
+        waitingOut = true;
       });
-    }).then((value) async {
+    })
+        .then((value) =>
+            Future.delayed(Duration(seconds: timerwaiting), () async {
+              setState(() {
+                waitingOut = false;
+              });
+            }))
+        .then((value) async {
       await windowManager.isFocused();
+      await windowManager.focus();
       fQR.requestFocus();
     });
   }
@@ -77,76 +93,121 @@ class _HomePageState extends State<HomePage> with WindowListener {
         body: !countDown
             ? Stack(
                 children: [
-                  Positioned(
-                    child: Center(
-                      child: Container(
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "SELAMAT DATANG",
-                                style: gotham.copyWith(
-                                  fontSize: 60,
-                                  color: secondary,
-                                ),
-                              ),
-                              Container(
-                                width: displayWidth(context) * 0.6,
-                                margin: EdgeInsets.only(top: 20),
-                                height: 60,
-                                child: TextField(
-                                  autofocus: true,
-                                  focusNode: fQR,
-                                  controller: qrController,
-                                  style: gotham.copyWith(color: primary),
-                                  onChanged: (String value) {
-                                    if (value.length >= 4) {
-                                      hideHandle(qrController.text);
-                                      qrController.clear();
-                                    }
-                                  },
-                                  textAlign: TextAlign.center,
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: whiteColor,
-                                    border: InputBorder.none,
+                  if (!waitingOut)
+                    Positioned(
+                      child: Center(
+                        child: Container(
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "SELAMAT DATANG",
+                                  style: gotham.copyWith(
+                                    fontSize: 60,
+                                    color: secondary,
                                   ),
                                 ),
-                              ),
-                              Text(
-                                "Scan QR CODE For Open Screen Lock",
-                                style: gotham.copyWith(
-                                  fontSize: 20,
-                                  fontWeight: light,
-                                  color: whiteColor,
+                                Container(
+                                  width: displayWidth(context) * 0.6,
+                                  margin: EdgeInsets.only(top: 20),
+                                  height: 60,
+                                  child: TextField(
+                                    autofocus: true,
+                                    focusNode: fQR,
+                                    controller: qrController,
+                                    style: gotham.copyWith(color: primary),
+                                    onChanged: (String value) {
+                                      setState(() {
+                                        wrong = false;
+                                      });
+                                      fQR.requestFocus();
+                                    },
+                                    onSubmitted: (String value) {
+                                      if (value == "FHINDO" ||
+                                          value == "FHINDO10" ||
+                                          value == "qwertieser") {
+                                        hideHandle(qrController.text);
+                                        qrController.clear();
+                                      } else if (value == "exitqwertieser") {
+                                        windowManager.close();
+                                      } else {
+                                        setState(() {
+                                          wrong = true;
+                                        });
+                                        fQR.requestFocus();
+                                      }
+                                    },
+                                    textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: whiteColor,
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 100,
-                              ),
-                              Text(
-                                "NIKMATI SESI FOTO ANDA DIDALAM FOTO BOX INI SELAMA 5 ATAU 10 MENIT SESUAI DENGAN WAKTU ORDER ANDA",
-                                style: gotham.copyWith(
-                                  fontSize: 20,
-                                  color: whiteColor,
-                                  fontWeight: light,
+                                if (wrong)
+                                  Text(
+                                    "Kode yang anda masukkan salah",
+                                    style: gotham.copyWith(
+                                      fontSize: 20,
+                                      fontWeight: light,
+                                      color: whiteColor,
+                                    ),
+                                  ),
+
+                                /* Text(
+                                  "Scan QR CODE For Open Screen Lock",
+                                  style: gotham.copyWith(
+                                    fontSize: 20,
+                                    fontWeight: light,
+                                    color: whiteColor,
+                                  ),
+                                ),*/
+                                SizedBox(
+                                  height: 100,
                                 ),
-                              ),
-                              SizedBox(
-                                height: 30,
-                              ),
-                              Text(
-                                "HUBUNGI ADMIN UNTUK MEMBUKA SCREEN LOCK",
-                                style: gotham.copyWith(
-                                  fontSize: 20,
-                                  color: secondary,
+                                Text(
+                                  "NIKMATI SESI FOTO ANDA DIDALAM FOTO BOX INI SELAMA 5 ATAU 10 MENIT SESUAI DENGAN WAKTU ORDER ANDA",
+                                  style: gotham.copyWith(
+                                    fontSize: 20,
+                                    color: whiteColor,
+                                    fontWeight: light,
+                                  ),
                                 ),
-                              ),
-                            ]),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                Text(
+                                  "HUBUNGI ADMIN UNTUK MEMBUKA SCREEN LOCK",
+                                  style: gotham.copyWith(
+                                    fontSize: 20,
+                                    color: secondary,
+                                  ),
+                                ),
+                              ]),
+                        ),
                       ),
                     ),
-                  ),
+                  if (waitingOut)
+                    Positioned(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "TERIMAKASIH\n\nSesi foto anda sudah habis, Silahkan keluar dari box ",
+                              textAlign: TextAlign.center,
+                              style: gotham.copyWith(
+                                fontSize: 20,
+                                color: whiteColor,
+                                fontWeight: bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   Positioned(
                     bottom: 40,
                     right: 10,
