@@ -37,6 +37,8 @@ class _HomePageState extends State<HomePage> with WindowListener {
       timer = 6;
     } else if (code == "FHINDO10") {
       timer = 11;
+    } else if (code == "EXTRA5") {
+      timer = 5;
     } else if (code == "qwertieser") {
       timer = 1;
       timerwaiting = 10;
@@ -118,6 +120,7 @@ class _HomePageState extends State<HomePage> with WindowListener {
                                   height: 60,
                                   child: TextField(
                                     autofocus: true,
+                                    obscureText: true,
                                     focusNode: fQR,
                                     controller: qrController,
                                     style: gotham.copyWith(color: primary),
@@ -130,7 +133,8 @@ class _HomePageState extends State<HomePage> with WindowListener {
                                     onSubmitted: (String value) {
                                       if (value == "FHINDO" ||
                                           value == "FHINDO10" ||
-                                          value == "qwertieser") {
+                                          value == "qwertieser" ||
+                                          value == "EXTRA5") {
                                         hideHandle(qrController.text);
                                         qrController.clear();
                                       } else if (value == "exitqwertieser") {
@@ -171,12 +175,17 @@ class _HomePageState extends State<HomePage> with WindowListener {
                                 SizedBox(
                                   height: 100,
                                 ),
-                                Text(
-                                  "NIKMATI SESI FOTO ANDA DIDALAM FOTO BOX INI SELAMA 5 ATAU 10 MENIT SESUAI DENGAN WAKTU ORDER ANDA",
-                                  style: gotham.copyWith(
-                                    fontSize: 20,
-                                    color: whiteColor,
-                                    fontWeight: light,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  child: Text(
+                                    "NIKMATI SESI FOTO ANDA DIDALAM FOTO BOX INI SELAMA 5 ATAU 10 MENIT SESUAI DENGAN WAKTU ORDER ANDA",
+                                    textAlign: TextAlign.center,
+                                    style: gotham.copyWith(
+                                      fontSize: 20,
+                                      color: whiteColor,
+                                      fontWeight: light,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
