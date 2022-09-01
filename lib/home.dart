@@ -34,9 +34,9 @@ class _HomePageState extends State<HomePage> with WindowListener {
     int timerwaiting = 60;
 
     if (code == "FHINDO") {
-      timer = 5;
+      timer = 6;
     } else if (code == "FHINDO10") {
-      timer = 10;
+      timer = 11;
     } else if (code == "qwertieser") {
       timer = 1;
       timerwaiting = 10;
@@ -86,6 +86,10 @@ class _HomePageState extends State<HomePage> with WindowListener {
     // do something
   }
 
+  void onWindowClose() async {
+    await windowManager.destroy();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,7 +134,7 @@ class _HomePageState extends State<HomePage> with WindowListener {
                                         hideHandle(qrController.text);
                                         qrController.clear();
                                       } else if (value == "exitqwertieser") {
-                                        windowManager.close();
+                                        onWindowClose();
                                       } else {
                                         setState(() {
                                           wrong = true;
@@ -196,7 +200,7 @@ class _HomePageState extends State<HomePage> with WindowListener {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "TERIMAKASIH\n\nSesi foto anda sudah habis, Silahkan keluar dari box ",
+                              "TERIMAKASIH\n\nSesi foto anda sudah habis, silahkan keluar dari box ",
                               textAlign: TextAlign.center,
                               style: gotham.copyWith(
                                 fontSize: 20,
