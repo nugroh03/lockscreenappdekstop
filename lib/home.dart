@@ -16,6 +16,7 @@ class _HomePageState extends State<HomePage> with WindowListener {
   bool countDown = false;
   bool waitingOut = false;
   bool wrong = false;
+  bool isTesting = false;
   Duration defaultDuration = Duration(seconds: 0);
   static const defaultPadding =
       EdgeInsets.symmetric(horizontal: 10, vertical: 5);
@@ -33,16 +34,17 @@ class _HomePageState extends State<HomePage> with WindowListener {
     int timer = 0;
     int timerwaiting = 60;
 
-    if (code == "FHINDO") {
+    if (code == "fh5") {
       timer = 6;
-    } else if (code == "FHINDO10") {
+    } else if (code == "fh10") {
       timer = 11;
-    } else if (code == "EXTRA5") {
+    } else if (code == "e5") {
       timer = 5;
-    } else if (code == "qwertieser") {
-      timer = 1;
-      timerwaiting = 10;
     }
+    // else if (code == "tes") {
+    //   timer = 1;
+    //   timerwaiting = 10;
+    // }
 
     setState(() {
       defaultDuration = Duration(minutes: timer);
@@ -92,8 +94,64 @@ class _HomePageState extends State<HomePage> with WindowListener {
     await windowManager.destroy();
   }
 
+  void testing() async {
+    setState(() {
+      countDown = true;
+      isTesting = true;
+    });
+    await windowManager.setSize(Size(300, 80));
+  }
+
+  // void minimize() async {
+  //   await windowManager.minimize();
+
+  //   qrController.clear();
+  // }
+
   @override
   Widget build(BuildContext context) {
+    Widget testingWidget() {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Testing !",
+              style: gotham.copyWith(fontSize: 14, color: secondary),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Center(
+              child: Container(
+                width: 100,
+                height: 30,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: secondary),
+                  onPressed: () async {
+                    await windowManager.setFullScreen(true);
+                    setState(() {
+                      countDown = false;
+                      isTesting = false;
+                    });
+                  },
+                  child: Center(
+                    child: Text(
+                      "Selesai",
+                      style: gotham.copyWith(
+                          fontSize: 14, color: primary, fontWeight: bold),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
         backgroundColor: primary,
         body: !countDown
@@ -131,13 +189,14 @@ class _HomePageState extends State<HomePage> with WindowListener {
                                       fQR.requestFocus();
                                     },
                                     onSubmitted: (String value) {
-                                      if (value == "FHINDO" ||
-                                          value == "FHINDO10" ||
-                                          value == "qwertieser" ||
-                                          value == "EXTRA5") {
+                                      if (value == "fh5" ||
+                                          value == "fh10" ||
+                                          value == "e5") {
                                         hideHandle(qrController.text);
                                         qrController.clear();
-                                      } else if (value == "exitqwertieser") {
+                                      } else if (value == "tes") {
+                                        testing();
+                                      } else if (value == "xxx") {
                                         onWindowClose();
                                       } else {
                                         setState(() {
@@ -246,26 +305,29 @@ class _HomePageState extends State<HomePage> with WindowListener {
                 ],
               )
             : Container(
-                child: Center(
-                  child: SlideCountdown(
-                    duration: defaultDuration,
-                    padding: defaultPadding,
-                    fade: true,
-                    textStyle: gotham.copyWith(fontSize: 30, color: whiteColor),
-                    icon: const Padding(
-                      padding: EdgeInsets.only(right: 5),
-                      child: Icon(
-                        Icons.alarm,
-                        color: Colors.white,
-                        size: 20,
+                child: (isTesting)
+                    ? testingWidget()
+                    : Center(
+                        child: SlideCountdown(
+                          duration: defaultDuration,
+                          padding: defaultPadding,
+                          fade: true,
+                          textStyle:
+                              gotham.copyWith(fontSize: 30, color: whiteColor),
+                          icon: const Padding(
+                            padding: EdgeInsets.only(right: 5),
+                            child: Icon(
+                              Icons.alarm,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                          decoration: BoxDecoration(
+                            color: primary,
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                          ),
+                        ),
                       ),
-                    ),
-                    decoration: BoxDecoration(
-                      color: primary,
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                    ),
-                  ),
-                ),
               ));
   }
 }
