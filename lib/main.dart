@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lockscreenapp/Home2.dart';
 import 'package:lockscreenapp/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
@@ -8,11 +9,11 @@ void main() async {
   await windowManager.ensureInitialized();
 
   WindowOptions windowOptions = WindowOptions(
-    alwaysOnTop: true,
+    alwaysOnTop: true, //true
     fullScreen: true,
     center: true,
     backgroundColor: Colors.transparent,
-    skipTaskbar: true,
+    skipTaskbar: true, //true
     titleBarStyle: TitleBarStyle.hidden,
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: Home2(),
     );
   }
 }

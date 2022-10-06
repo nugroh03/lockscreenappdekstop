@@ -1,26 +1,25 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:lockscreenapp/constant.dart';
 import 'package:lockscreenapp/models/setting_models.dart';
 import 'package:lockscreenapp/settingpage.dart';
 import 'package:lockscreenapp/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:slide_countdown/slide_countdown.dart';
 import 'package:timer_count_down/timer_controller.dart';
-import 'package:timer_count_down/timer_count_down.dart';
 import 'package:window_manager/window_manager.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class Home2 extends StatefulWidget {
+  const Home2({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<Home2> createState() => _Home2State();
 }
 
-class _HomePageState extends State<HomePage> with WindowListener {
+class _Home2State extends State<Home2> with WindowListener {
   TextEditingController qrController = TextEditingController(text: '');
   TextEditingController maintenanceController = TextEditingController(text: '');
   Future<SharedPreferences> _settingPrefs = SharedPreferences.getInstance();
@@ -32,6 +31,8 @@ class _HomePageState extends State<HomePage> with WindowListener {
   bool isSetting = false;
   bool wrongcodemaintenance = false;
   Duration defaultDuration = Duration(seconds: 0);
+  int seconds = 0;
+  Timer? timer;
 
   SettingModel? setting;
 
@@ -55,51 +56,6 @@ class _HomePageState extends State<HomePage> with WindowListener {
     await windowManager.setAlwaysOnTop(true);
     await windowManager.setSkipTaskbar(true);
   }
-
-  // void hideHandle(String code) async {
-  //   int timer = 0;
-  //   int timerwaiting = 60;
-
-  //   if (code == "fh5") {
-  //     timer = 6;
-  //   } else if (code == "010") {
-  //     timer = 11;
-  //   } else if (code == "e5") {
-  //     timer = 5;
-  //   }
-  //   // else if (code == "tes") {
-  //   //   timer = 1;
-  //   //   timerwaiting = 10;
-  //   // }
-
-  //   setState(() {
-  //     defaultDuration = Duration(minutes: timer);
-  //     countDown = true;
-  //   });
-  //   // await windowManager.setPosition(Offset(1200, 700));
-  //   await windowManager.setSize(Size(300, 80));
-
-  //   Future.delayed(Duration(minutes: timer), () async {
-  //     await windowManager.setFullScreen(true);
-  //     await windowManager.focus();
-  //     setState(() {
-  //       defaultDuration = Duration(seconds: 0);
-  //       countDown = false;
-  //       waitingOut = true;
-  //     });
-  //   })
-  //       .then((value) =>
-  //           Future.delayed(Duration(seconds: timerwaiting), () async {
-  //             setState(() {
-  //               waitingOut = false;
-  //             });
-  //           }))
-  //       .then((value) async {
-  //     await windowManager.isFocused();
-  //     await windowManager.focus();
-  //     fQR.requestFocus();
-  //   });
-  // }
 
   getSetting() async {
     final SharedPreferences prefs = await _settingPrefs;
@@ -137,6 +93,34 @@ class _HomePageState extends State<HomePage> with WindowListener {
     return "$minute : $second";
   }
 
+  void resetTimer() => setState(() => seconds = defaultDuration.inSeconds);
+
+  void startTimer({bool reset = true}) {
+    if (reset) {
+      resetTimer();
+    }
+
+    timer = Timer.periodic(Duration(seconds: 1), (_) {
+      if (seconds > 0) {
+        setState(() => seconds--);
+      } else {
+        stopTimer();
+        handleAfterTimerDone();
+      }
+    });
+  }
+
+  void stopTimer({bool reset = true}) {
+    if (reset) {
+      resetTimer();
+    }
+    setState(() {
+      timer?.cancel();
+      isSetting = false;
+      isPause = true;
+    });
+  }
+
   void hideHandleNew(String code) async {
     int timer = 0;
 
@@ -156,14 +140,13 @@ class _HomePageState extends State<HomePage> with WindowListener {
 
     setState(() {
       defaultDuration = Duration(minutes: timer);
+      seconds = defaultDuration.inSeconds;
       countDown = true;
     });
     // await windowManager.setPosition(Offset(1200, 700));
-    await windowManager
-        .setSize(Size(350, 90))
-        .then((value) => _controller.start())
-        .then((value) => _controller.pause())
-        .then((value) => _controller.resume());
+    await windowManager.setSize(Size(350, 90)).then((value) {
+      startTimer();
+    });
 
     // Future.delayed(Duration(minutes: timer), () async {
     // await windowManager.setFullScreen(true);
@@ -333,6 +316,7 @@ class _HomePageState extends State<HomePage> with WindowListener {
                 },
                 onFieldSubmitted: (String value) {
                   if (value.toLowerCase() == "11") {
+                    stopTimer(reset: false);
                     handlePause();
                   } else {
                     setState(() {
@@ -372,6 +356,7 @@ class _HomePageState extends State<HomePage> with WindowListener {
     }
 
     Widget settingPlayAndStop() {
+      final isRunning = timer == null ? false : timer!.isActive;
       return Container(
         padding: EdgeInsets.only(top: 10),
         child: Row(
@@ -381,7 +366,11 @@ class _HomePageState extends State<HomePage> with WindowListener {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: GestureDetector(
                   onTap: () {
-                    _controller.resume();
+                    if (isRunning) {
+                      stopTimer(reset: false);
+                    } else {
+                      startTimer(reset: false);
+                    }
                     setState(() {
                       isPause = false;
                     });
@@ -398,8 +387,7 @@ class _HomePageState extends State<HomePage> with WindowListener {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: GestureDetector(
                   onTap: () async {
-                    _controller.pause();
-
+                    stopTimer(reset: true);
                     handleStop();
                   },
                   child: Icon(
@@ -649,7 +637,28 @@ class _HomePageState extends State<HomePage> with WindowListener {
                                 children: [
                                   Expanded(
                                     child: Container(
-                                      child: Countdown(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.alarm,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            formatedTime(timeInSecond: seconds),
+                                            style: gotham.copyWith(
+                                                fontSize: 30,
+                                                color: whiteColor),
+                                          ),
+                                        ],
+                                      ),
+
+                                      /* Countdown(
                                           controller: _controller,
                                           onFinished: () {
                                             handleAfterTimerDone();
@@ -680,7 +689,7 @@ class _HomePageState extends State<HomePage> with WindowListener {
                                                 ],
                                               ),
                                             );
-                                          }),
+                                          }),*/
                                     ),
                                   ),
                                   // if (isSetting) testFieldMaintenance()
