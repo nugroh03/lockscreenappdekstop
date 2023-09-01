@@ -132,6 +132,14 @@ class _Home2State extends State<Home2> with WindowListener {
       timer = 5;
     } else if (code == "qwertieser") {
       timer = 1;
+    } else if (code == "001") {
+      timer = 1;
+    } else if (code == "002") {
+      timer = 2;
+    } else if (code == "003") {
+      timer = 3;
+    } else if (code == "004") {
+      timer = 4;
     }
     // else if (code == "tes") {
     //   timer = 1;
@@ -470,6 +478,10 @@ class _Home2State extends State<Home2> with WindowListener {
                                           if (value.toLowerCase() == "005" ||
                                               value.toLowerCase() == "010" ||
                                               value.toLowerCase() == "051" ||
+                                              value.toLowerCase() == "001" ||
+                                              value.toLowerCase() == "002" ||
+                                              value.toLowerCase() == "003" ||
+                                              value.toLowerCase() == "004" ||
                                               value.toLowerCase() ==
                                                   "qwertieser") {
                                             //  hideHandle(qrController.text);
@@ -593,17 +605,17 @@ class _Home2State extends State<Home2> with WindowListener {
                           child: Column(
                             children: [
                               Image.asset(
-                                "assets/logo.png",
-                                width: 50,
+                                "assets/logo-new.png",
+                                width: 220,
                               ),
-                              Image.asset(
-                                "assets/title.png",
-                                width: 200,
-                              ),
-                              Image.asset(
-                                "assets/description.png",
-                                width: 200,
-                              )
+                              // Image.asset(
+                              //   "assets/title.png",
+                              //   width: 200,
+                              // ),
+                              // Image.asset(
+                              //   "assets/description.png",
+                              //   width: 200,
+                              // )
                             ],
                           ),
                         ),

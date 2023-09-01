@@ -605,17 +605,17 @@ class _HomePageState extends State<HomePage> with WindowListener {
                           child: Column(
                             children: [
                               Image.asset(
-                                "assets/logo.png",
+                                "assets/logo-new.png",
                                 width: 50,
                               ),
-                              Image.asset(
-                                "assets/title.png",
-                                width: 200,
-                              ),
-                              Image.asset(
-                                "assets/description.png",
-                                width: 200,
-                              )
+                              // Image.asset(
+                              //   "assets/title.png",
+                              //   width: 200,
+                              // ),
+                              // Image.asset(
+                              //   "assets/description.png",
+                              //   width: 200,
+                              // )
                             ],
                           ),
                         ),

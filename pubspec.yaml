@@ -51,7 +51,7 @@ msix_config:
   certificate_path: D:\ABCD Project\FOTO HOKIE\lockscreenappdekstop\certificate\lockscreensertificate.pfx
   certificate_password: 1234
   publisher: CN=SAND_ENTERPRICE, O=My Company, L=Indonesia, S=Indonesia, C=IDN
-  architecture: x64
+  architecture: x86
   logo_path: D:\ABCD Project\FOTO HOKIE\lockscreenappdekstop\certificate\logo.png
   capabilities: 'internetClient,location,microphone,webcam'
   # msix_config:
